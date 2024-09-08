@@ -1,12 +1,49 @@
 import {
   View,
   Text,
-  TouchableOpacity,
   ScrollView,
   Image,
   StyleSheet,
+  Dimensions,
 } from 'react-native';
-import {LineChart} from 'react-native-charts-wrapper';
+import {LineChart, ProgressChart} from 'react-native-chart-kit';
+
+const BezierLineChart = () => {
+  return (
+    <>
+      <LineChart
+        data={{
+          labels: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
+          datasets: [
+            {
+              data: [30, 31, 38, 69, 70, 70],
+            },
+          ],
+        }}
+        width={Dimensions.get('window').width + 150} // from react-native
+        height={220}
+        chartConfig={{
+          backgroundGradientFrom: '#fafaf8',
+          backgroundGradientTo: '#fafaf8',
+          color: (opacity = 1) => `rgba(79,131,125, ${opacity})`,
+          labelColor: () => 'transparent', // Hides axis labels
+          propsForBackgroundLines: {
+            strokeDasharray: '',
+            stroke: 'transparent', // Hides grid lines
+          },
+          propsForDots: {
+            r: '2.5',
+          },
+        }}
+        bezier
+        withVerticalLabels={false}
+        withHorizontalLabels={false}
+        withInnerLines={false}
+        style={{}}
+      />
+    </>
+  );
+};
 
 const LifeReport = () => {
   const currentWeekData = [
@@ -46,10 +83,13 @@ const LifeReport = () => {
           />
           <Text style={styles.headerTitle}>Life report</Text>
           <Image
+            style={styles.headerListIcon}
+            source={require('./Pics/list.png')}
+          />
+          <Image
             style={styles.headerDropIcon}
             source={require('./Pics/arrowDown.png')}
           />
-          
         </View>
         <View style={styles.icons}>
           <Image
@@ -77,23 +117,17 @@ const LifeReport = () => {
           />
         </View>
         {/* Chart */}
-        <LineChart
-          style={styles.chart}
-          data={{
-            dataSets: [
-              {
-                values: [5, 6, 7, 8, 6, 7],
-                label: 'Mood Trend',
-              },
-            ],
-          }}
-        />
+
+        <View style={styles.chartContainer}>
+          {/* <BezierLineChart /> */}
+          <Image style={styles.chart} source={require('./Pics/graph.png')} />
+        </View>
 
         <View style={styles.weekDays}>
           <Text style={styles.day}>M</Text>
           <Text style={styles.day}>T</Text>
           <Text style={styles.day}>W</Text>
-          <Text style={styles.day}>T</Text>
+          <Text style={styles.holyday}>T</Text>
           <Text style={styles.day}>F</Text>
           <Text style={styles.day}>S</Text>
           <Text style={styles.day}>S</Text>
@@ -145,20 +179,29 @@ const styles = StyleSheet.create({
   },
 
   headerBackIcon: {
-    width: 30,
-    height: 30,
+    width: 32,
+    height: 32,
+    marginTop: 2,
   },
 
   headerTitle: {
     fontSize: 25,
-    color: '#333',
+    color: '##42786b',
     fontFamily: 'serif',
+  },
+
+  headerListIcon: {
+    width: 21,
+    height: 21,
+    marginLeft: 10,
+    marginTop: 5,
   },
 
   headerDropIcon: {
     width: 11,
     height: 11,
     marginLeft: 10,
+    marginTop: 3,
   },
 
   icons: {
@@ -167,9 +210,9 @@ const styles = StyleSheet.create({
   },
 
   headerIcon: {
-    width: 27,
-    height: 27,
-    marginRight: 10,
+    width: 30,
+    height: 30,
+    marginRight: 15,
   },
 
   currentWeek: {
@@ -198,14 +241,24 @@ const styles = StyleSheet.create({
 
   currentWeekText: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: 'gray',
+    fontWeight: '400',
+    color: '#42786b',
     fontFamily: 'serif',
   },
 
+  chartContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: 'center',
+    height: 155,
+  },
+
   chart: {
-    height: 200,
-    marginVertical: 20,
+    width: '100%' /* Make the graph take the full width of the container */,
+    height: '100%' /* Make the graph take the full height of the container */,
+    resizeMode: 'contain',
+    marginTop: -2,
   },
 
   weekDays: {
@@ -216,12 +269,18 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderTopWidth: 1,
     borderColor: 'gray',
+    marginTop: -5,
   },
 
   day: {
     fontSize: 15,
-    fontWeight: 'bold',
-    color: 'gray',
+    color: '#42786b',
+    fontFamily: 'serif',
+  },
+
+  holyday: {
+    color: '#b6bcb8',
+    fontSize: 15,
     fontFamily: 'serif',
   },
 
@@ -234,7 +293,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 10,
   },
-  
+
   dayRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -257,7 +316,7 @@ const styles = StyleSheet.create({
   },
 
   tag: {
-    backgroundColor: '#d1f0e8',
+    backgroundColor: '#ade5da',
     borderRadius: 15,
     paddingVertical: 5,
     paddingHorizontal: 10,
